@@ -3,7 +3,7 @@ class QmanagerBE{
 		const{
 			CIN="",
 			mois="",
-			conStr="",
+			conStr={},
 			dependencyes=[]
 		}=options;
 
@@ -13,7 +13,19 @@ class QmanagerBE{
 		this.res=res;
 		this.req=req;
 		this.dependencyes=dependencyes;
-		this.conStr=conStr;
+		this.db=new this.dependencyes.Db()
+		this.conStr=this.db.cs;
+		this.fs=this.dependencyes["fs"];
+		// console.log(this.dependencyes);
+	}
+	
+	async testConnexion(){
+		try{
+			let con=await this.odbc.createConnection(this.conStr);
+		// console.log(con);
+		}catch(err){
+			console.log(err);
+		}
 	}
 	
 	async getData(options={}){
@@ -26,18 +38,18 @@ class QmanagerBE{
 		try{
 			let con= await this.odbc.createConnection(this.conStr);
 			let r=await con.query(q);
+			con.close()
 			// console.log(r)
-			let r1={data:[],structure:{}};
+			/* let r1={data:[],structure:{}};
 			r1.structure=await mytableStructure.getTableStructurefromR({ars:r});
 			let i=0
 			while(typeof(r[i])!="undefined"){
 				// console.log(r[i])
 				r1.data.push(r[i]);
 				i++;
-			}
+			} */
 			// console.log(r1);
-			con.close()
-			return r1;
+			return r;
 			
 		}catch(err){
 			throw err
@@ -84,12 +96,11 @@ class QmanagerBE{
 	}
 		
 	async prepareUpdate(rows, options={}){
-		const{tableName="AVANCE", id="NumOrdreAvance"}=options;
+		const{tableName="AVANCE", id="NumOrdreAvance", colNames=[]}=options;
 		try{
 			let ar=[]
 			for(let o of rows){
-				
-				let arKs=Object.keys(o);
+				let arKs=(colNames.length>0)?colNames:Object.keys(o);
 				let s1="UPDATE "+tableName+" SET ";
 				let ksMaped=arKs.map((k)=>{
 					let s="";
@@ -111,27 +122,48 @@ class QmanagerBE{
 		}
 	}
 	
+	async prepareDelete(opt={}){
+		try{
+			const{
+				baseName="",
+				tableName="",
+				tableKey="",
+				keyValue=0
+			}=opt;
+			let arq=[];
+			let v=(!isNaN(keyValue))?keyValue:"'"+keyValue+"'"
+			
+			let s="DELETE FROM `"+baseName+"`.`"+tableName+"` WHERE `"+tableName+"`.`"+tableKey+"` = "+v+";"
+			arq.push(s);
+			
+			return arq
+		}catch(err){
+			console.log(err);
+		}	
+	}
+	
 	async orderInsert(insertQ){
 		try{
 			const con=await this.odbc.createConnection(this.conStr);
+			let r={};
 			for(let q of insertQ){
-				 // console.log(q);
-				let r=await con.query(q);
-				 // console.log(r);
-			}
-			con.close();
-			return 'OK';
+				r=await con.query(q);
+				}
+			con.close()
+			return r;
 		}catch(err){
-			console.log(insertQ);
 			throw err;
 		}
 	}
 	
 	async addRow(options={}){
 		const{ar=[] , structure={},
-		 tableKey="RangPiece", tableName="PIECE"
+		 tableKey="RangPiece", tableName="PIECE", saveInJson=false
 		}=options
 		try{
+			if(saveInJson===true){
+				await this.saveInJson({ar:ar});
+			}
 			let o={structure:structure}
 			let q=await this.prepareInsert(ar,{struct:o, tableKey:tableKey, tableName:tableName} );
 			// console.log(q);
@@ -142,6 +174,46 @@ class QmanagerBE{
 			console.log(err)
 		}
 		
+	}
+	
+	async updtRow(options={}){
+		const{rows=[], tableName="", id=""}=options
+		try{
+			let q=await this.prepareUpdate(rows,{tableName:tableName, id:id});
+			let r=await this.orderInsert(q);
+			return r
+		}catch(err){
+			console.log(err)
+		}
+		
+	}
+	
+	async saveInJson(options={}){
+		const{ar=[]}=options
+		try{
+			for (const el of ar) {
+				let fName=`public/data/${el.idPointage}.${el.Mois}.json`
+				
+			  this.sauvegarderObjetJSON(el.ById,fName);
+			}
+			return 0;
+		}catch(err){
+			console.log(err)
+		}
+		
+	}
+	
+	sauvegarderObjetJSON(objet, cheminFichier) {
+	  try {
+		/* const contenuJSON = JSON.stringify(objet, null, 2); // Convertit l'objet en JSON avec indentation
+		this.fs.writeFileSync(cheminFichier, contenuJSON); */
+		// console.log(`Objet sauvegardé dans ${cheminFichier}`);
+		const contenuJSON = JSON.stringify(objet, null, 2);
+		this.fs.writeFile(cheminFichier, contenuJSON,(e)=>{if(e){console.log(e);}else{console.log('sauvegarde terminé');}} );
+		return 0;
+	  } catch (erreur) {
+		console.error(`Erreur lors de la sauvegarde de l'objet : ${erreur}`);
+	  }
 	}
 	
 }
