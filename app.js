@@ -30,10 +30,11 @@ app.get('/', (req, res) => {
 	res.render('index', { title: 'TEST', message: '' });
 });//get started
 
-app.post('/test',async (res,req)=>{
+app.post('/test',async (req,res)=>{
 	let myQman=new QmanagerBE(odbc, res, req, {dependencyes:dependencyes})
-	await myQman.testConnexion()
-	
+	let r=await myQman.testConnexion()
+	// console.log(res);
+	res.json(r)
 })
 
 /* '/getListArticle' by NumPiece */

@@ -22,6 +22,8 @@ class QmanagerBE{
 	async testConnexion(){
 		try{
 			let con=await this.odbc.createConnection(this.conStr);
+			// console.log(con);
+			return con
 		// console.log(con);
 		}catch(err){
 			console.log(err);
