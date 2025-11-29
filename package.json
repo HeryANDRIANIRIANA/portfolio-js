@@ -2,14 +2,10 @@
   "name": "frontend",
   "version": "1.0.0",
   "description": "",
-<<<<<<< HEAD
-  "main": "index.js",
-=======
   "main": "app.js",
->>>>>>> 931c040e9f105134799ff6b0f1f9ac66c63c6253
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
