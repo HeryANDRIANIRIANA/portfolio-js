@@ -10,8 +10,11 @@ const dateBE=require(__dirname+'/privateModule/dateBE');
 const exceljs = require('exceljs');
 const app = express();
 const path = require('path')      ;
-const port = 3002;
-const adr="127.0.0.1";
+/* const port = 3002;
+const adr="127.0.0.1"; */
+const port = process.env.PORT || 3002;
+const adr = "0.0.0.0";
+
 const cors = require("cors");
 const fs = require("fs");
 app.use(cors());
