@@ -1,7 +1,7 @@
 const express = require('express');
 const multer=require('multer');
 const odbc = require('mysql2/promise');
-const Db=require(__dirname+'/privateModule/db');
+const Db=require(__dirname+'/env/db');
 const QmanagerBE=require(__dirname+'/privateModule/QmanagerBE');
 const articleBE=require(__dirname+'/privateModule/articleBE');
 const mouvementStockBE=require(__dirname+'/privateModule/mouvementStockBE');
@@ -10,10 +10,9 @@ const dateBE=require(__dirname+'/privateModule/dateBE');
 const exceljs = require('exceljs');
 const app = express();
 const path = require('path')      ;
-/* const port = 3002;
-const adr="127.0.0.1"; */
-const port = process.env.PORT || 3002;
-const adr = "0.0.0.0";
+/*  */
+/* const port = process.env.PORT || 3002;
+const adr = "0.0.0.0"; */
 
 const cors = require("cors");
 const fs = require("fs");
