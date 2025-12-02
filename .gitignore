@@ -1,3 +1,4 @@
 /localenv/*
 /env/*
 /onlineenv/*
+/node_modules/
