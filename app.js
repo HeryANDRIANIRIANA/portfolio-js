@@ -13,6 +13,10 @@ const path = require('path')      ;
 /*  */
 /* const port = process.env.PORT || 3002;
 const adr = "0.0.0.0"; */
+let Env=require(__dirname+'/env/env');
+let MyEnv=new Env();
+const port=myEnv.port;
+const adr=myEnv.adr;
 
 const cors = require("cors");
 const fs = require("fs");
