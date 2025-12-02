@@ -3,6 +3,7 @@ class Env{
 		this.odbc='odbc';
 		this.port = 3002;
 		this.adr="127.0.0.1";
+		console.log('test');
 	}
 }
 module.exports = Env
