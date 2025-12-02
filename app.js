@@ -1,7 +1,8 @@
 const express = require('express');
 const multer=require('multer');
-const odbc = require('mysql2/promise');
-const Db=require(__dirname+'/env/db');
+// const odbc = require('mysql2/promise');
+
+const Db=require(__dirname+'/env/db2');
 const QmanagerBE=require(__dirname+'/privateModule/QmanagerBE');
 const articleBE=require(__dirname+'/privateModule/articleBE');
 const mouvementStockBE=require(__dirname+'/privateModule/mouvementStockBE');
@@ -14,9 +15,10 @@ const path = require('path')      ;
 /* const port = process.env.PORT || 3002;
 const adr = "0.0.0.0"; */
 let Env=require(__dirname+'/env/env');
-let MyEnv=new Env();
+let myEnv=new Env();
 const port=myEnv.port;
 const adr=myEnv.adr;
+const odbc = require(myEnv.odbc);
 
 const cors = require("cors");
 const fs = require("fs");
